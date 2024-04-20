@@ -11,7 +11,7 @@ const searchData = async() => {
                 resultQuery.value = response.data.value.collection.items
                 loader.value = false
                 console.log(response.data.value.collection)
-            }, 1000)
+            }, 10000)
         }
     }) 
 }
