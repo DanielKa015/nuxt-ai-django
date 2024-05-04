@@ -10,7 +10,10 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@vueuse/core": "^10.9.0",
+    "axios": "^1.6.8",
     "nuxt": "^3.10.3",
+    "openai": "^4.0.0",
     "vue": "^3.4.19",
     "vue-router": "^4.3.0"
   },

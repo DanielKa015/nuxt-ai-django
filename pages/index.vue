@@ -1,54 +1,122 @@
+<template>
+  <div class="container">
+    <div class="search-container">
+      <input type="text" v-model="searchQuery" placeholder="Wyszukaj obrazy...">
+      <button @click="searchData" :disabled="loader">{{ loader ? 'Wyszukiwanie...' : 'Wyszukaj' }}</button>
+    </div>
+    <div class="loading" v-if="loader">Trwa ładowanie danych...</div>
+
+    <div class="results" v-else-if="arrayData && arrayData.length > 0">
+      <div class="image-card" v-for="(item, index) in arrayData" :key="index">
+        <div class="image-overlay">
+          <p class="image-description">{{ item.alt_description }}</p>
+        </div>
+        <img :src="item.urls.regular" :alt="item.alt_description">
+      </div>
+    </div>
+    <div v-else>
+      <p class="no-results">Brak wyników wyszukiwania dla tej frazy.</p>
+    </div>
+  </div>
+</template>
+
 <script setup>
-const searchQuery = ref("star")
-const resultQuery = ref(null)
-const arrayData = ref(null)
-const loader = ref(false)
-const searchData = async() => {
-    loader.value = true
-    await useFetch('https://images-api.nasa.gov/search?q=' + searchQuery.value).then((response) => {
-        if(response.data) {
-            setTimeout(() => {
-                resultQuery.value = response.data.value.collection.items
-                loader.value = false
-                console.log(response.data.value.collection)
-            }, 10000)
-        }
-    }) 
-}
+import { ref, watch } from 'vue';
+
+const searchQuery = ref("star");
+const resultQuery = ref(null);
+const arrayData = ref(null);
+const loader = ref(false);
+
+const searchData = async () => {
+  loader.value = true;
+  const response = await fetch(`https://api.unsplash.com/search/photos?query=${searchQuery.value}&client_id=zZKclMyxDzIt4CNElsfrMAMJf1VuggsSmofbr1of3iw`);
+  const data = await response.json();
+  resultQuery.value = data.results;
+  loader.value = false;
+};
 
 onBeforeMount(async () => {
-    await searchData()
+  await searchData();
 });
 
-// Użycie watch do obserwacji resultQuery
 watch(resultQuery, (newValue, oldValue) => {
-    arrayData.value = newValue
-
-    console.log(newValue); // Wyświetla nową wartość resultQuery.value
-    // Możesz tutaj dodać dodatkowe logikę, która ma się wykonać po zmianie wartości
+  arrayData.value = newValue;
 }, {
-    deep: true // opcja 'deep' jest przydatna, jeśli obserwowany obiekt jest złożony (np. obiekt lub tablica)
+  deep: true
 });
 </script>
-<template>
-    <div>
-        <input type="text" v-model="searchQuery">
-        <button @click="searchData" v-if="!loader">Wyszukaj</button>
-        <button @click="searchData" disabled v-else>Wyszukaj</button>
-        <div class="cos" v-if="loader">To jest ladowanie danych</div>
 
-        <div class="result" v-else>
-            <div v-for="(value, index) in arrayData" :key=index>
-                {{  value.links }}
-        </div>
-        </div>
-        
-    </div>
-</template>
-<style scoped lang="scss">
-h3 {
-    span {
-        color: green
-    }
+<style scoped>
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.search-container {
+  margin-bottom: 20px;
+}
+
+input[type="text"] {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 70%;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.loading {
+  text-align: center;
+  font-size: 18px;
+  margin-top: 20px;
+}
+
+.results {
+  margin-top: 20px;
+}
+
+.image-card {
+  margin-bottom: 20px;
+  position: relative; /* Dodajemy pozycję względną dla kontenera obrazka */
+}
+
+.image-overlay {
+  position: absolute; /* Ustawiamy pozycję absolutną dla nakładki z tekstem */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Dodajemy przezroczyste tło */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.image-description {
+  color: #fff;
+  font-size: 16px;
+  text-align: center;
+}
+
+.no-results {
+  text-align: center;
+  font-size: 18px;
+  color: #777;
 }
 </style>

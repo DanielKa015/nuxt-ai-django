@@ -2,7 +2,7 @@
 
 </script>
 <template>
- <h3><span>about</span></h3>
+ <h3><span>Stworzył Daniel Kamiński i Paweł Błędzki</span></h3>
 </template>
 <style scoped lang="scss">
 h3 {

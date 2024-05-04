@@ -22,11 +22,11 @@
       </NuxtLink>
 
       <NuxtLink to="/about" class="navbar-item">
-        about
+        O stronie
       </NuxtLink>
 
       <a href="/about" class="navbar-item">
-        about (nie spa)
+        Kontakt
       </a>
 
       <div class="navbar-item has-dropdown is-hoverable">
